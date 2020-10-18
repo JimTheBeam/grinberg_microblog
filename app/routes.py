@@ -51,7 +51,7 @@ def login():
         login_user(user, remember=form.remember_me.data)
 
         next_page = request.args.get('next')
-        if not next_page or url_parse(next_page).net.loc != '':
+        if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
         return redirect(next_page)
     return render_template('login.html', title='Sign In', form=form)
@@ -61,7 +61,6 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('index'))
-
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -93,7 +92,7 @@ def user(username):
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
-    form = EditProfileForm()
+    form = EditProfileForm(current_user.username)
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.about_me = form.about_me.data
