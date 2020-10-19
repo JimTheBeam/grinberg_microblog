@@ -6,15 +6,27 @@ from hashlib import md5
 from app import db, login
 
 
+
+followers = db.Table('followers', 
+            db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
+            db.Column('fillowed_id', db.Integer, db.ForeignKey('user.id')))
+            
+
+
 class User(UserMixin,db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
-
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    followed = db.relationship(
+            'User', secondary=followers,
+            primaryjoin=(followers.c.follower_id == id),
+            secondaryjoin=(followers.c.followed_id == id),
+            backref=db.backref('followers', lazy='dinamic'), lazy='dinamic'
+    )
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
