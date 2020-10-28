@@ -3,7 +3,7 @@ from logging.handlers import SMTPHandler, RotatingFileHandler
 
 import os
 
-from flask import Flask, request
+from flask import Flask, request, current_app
 from flask_babel import Babel, lazy_gettext as _l
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
@@ -82,8 +82,8 @@ def create_app(config_class=Config):
 
 @babel.localeselector
 def get_locale():
-    return request.accept_languages.best_match(app.config['LANGUAGES'])
+    return request.accept_languages.best_match(current_app.config['LANGUAGES'])
 
 
-from app import routes, models
+from app import models
 
