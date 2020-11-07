@@ -119,7 +119,7 @@ class User(UserMixin,db.Model):
             {'reset_password': self.id, 'exp': time() + expires_in},
             current_app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
 
-    def new_message(self):
+    def new_messages(self):
         last_red_time = self.last_message_read_time or datetime(1900, 1, 1)
         return Message.query.filter_by(recipient=self).filter(
             Message.timestamp > last_red_time).count()
